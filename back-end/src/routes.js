@@ -3,7 +3,6 @@ import express from 'express';
 
 let router = express.Router();
 
-
 router.use('/api/hashtag', hashtagRouter);
 
 export default router;
