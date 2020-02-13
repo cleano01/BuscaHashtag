@@ -1,49 +1,39 @@
 import express from 'express'
-import twitter_config from '../../config/twitter-config'
-
+//import twitter_config from '../../../config/twitter-config'
+import {lista_tweets, parameters, stream } from '../service/service'
 const hashtagRouter = express.Router();
-
-var data = [
+/*
+var lista_tweets = [
  
 ];
+
 const parameters = {
   track: "#flamengo,#festabbb,#BBBB20",        
 };
 
-function adc (e){
-  console.log('AQUI == ADC')
-  data.push(e);
-}
-
 const stream = () => {
   twitter_config.stream('statuses/filter', 
   parameters, (stream) => {
-      stream.on('data', (tweet) =>{
-      adc(tweet);
+    stream.on('data', (tweet) =>{
+      lista_tweets.push(tweet);
       console.log(tweet)
     });
-
     stream.on('error', (error) => {
-      console.log(error);
+      res.send(error)
     });
-
-    setTimeout(stream.destroy, 5000)
-    
+    setTimeout(stream.destroy, 5000)   
   })
 }
+*/
 
 hashtagRouter.route('/parar').get((req, res) => {  
-     
-  console.log('#################################################')
-  adc();
-  console.log('#################################################')
-  res.send(data);
+  res.send('lista_tweets');
 });
 
-
 hashtagRouter.route('/buscar').get( (req, res)  =>{
-  stream();  
-  res.send('ok') 
+  //stream();
+  console.log(parameters.track)  
+  res.send('ok2') 
 });
 
 export default hashtagRouter;
