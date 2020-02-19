@@ -9,9 +9,9 @@ hashtagRouter.route('/parar').get((req, res) => {
 });
 
 hashtagRouter.route('/buscar').get( (req, res)  =>{
-  parameters.track="#flamengo,#festabbb,#BBBB20"
+  parameters.track="#RaspemOSovaco,#bbb,#BBB"
   stream()    
-  res.send('ok23') 
+  res.send({'Status':'Busca feita com sucesso'}) 
 });
 
 export default hashtagRouter;
