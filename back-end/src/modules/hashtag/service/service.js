@@ -7,28 +7,35 @@ export const parameters = {
 };
 
 export const tratemento_hashtag = (lista_hashtag) =>{
-  let lista_hashtag_tratada='';
+  try {
+    let lista_hashtag_tratada='';
 
-  lista_hashtag.map((elemento)=>{
+    lista_hashtag.map((elemento)=>{
     
-    if(elemento[0] != "#" && elemento != undefined){
-      lista_hashtag_tratada += '#'+elemento+','
-    }
+      if(elemento[0] != "#" && elemento != undefined){
+        lista_hashtag_tratada += '#'+elemento+','
+      }
 
-    else if(elemento != undefined){
-      lista_hashtag_tratada += elemento+','
-    }
-  })
+      else if(elemento != undefined){
+        lista_hashtag_tratada += elemento+','
+      }
+    })
   
-  lista_hashtag_tratada = lista_hashtag_tratada
-  .substr(0, (lista_hashtag_tratada.length - 1));
-  return lista_hashtag_tratada;
+    lista_hashtag_tratada = lista_hashtag_tratada
+    .substr(0, (lista_hashtag_tratada.length - 1));
+    return lista_hashtag_tratada;
+  
+  } 
+  catch (error) {
+    return {'Error': `Erro em tratemento_hashtag,  ${error}`}
+  }  
 }
 
 
 export const  stream = () => {
-  twitter_config.stream('statuses/filter', 
-  parameters, (stream) => {
+  try {
+    twitter_config.stream('statuses/filter', 
+    parameters, (stream) => {
 
     stream.on('data', (tweet) =>{
       lista_tweets.push(tweet);
@@ -40,5 +47,11 @@ export const  stream = () => {
 
     setTimeout(stream.destroy, 10000)   
   })
+  
+  } 
+  catch (error) {
+    return {'Error': `Erro em stream,  ${error}`}
+  }
+  
 }
 

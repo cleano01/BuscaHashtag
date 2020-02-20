@@ -5,16 +5,24 @@ const hashtagRouter = express.Router();
 
 
 hashtagRouter.route('/buscar').post(  async (req, res)  =>{
-  let lista_hashtag = req.body;
-  let tratado_hashtag = tratemento_hashtag(lista_hashtag);
-  parameters.track=tratado_hashtag;
-  
-  stream()
-  
-  setTimeout(()=>{
-    res.send(lista_tweets) 
+  try {
     
-  }, 15000);
+    let lista_hashtag = req.body;
+    let tratado_hashtag = tratemento_hashtag(lista_hashtag);
+    parameters.track=tratado_hashtag;
+  
+    stream()
+  
+    setTimeout(()=>{
+      res.send(lista_tweets) 
+    
+    }, 15000);
+    
+  } 
+  catch (error) {
+    return {'Error': `Erro na rota /buscar,  ${error}`}
+  }
+  
 });
 
 export default hashtagRouter;
