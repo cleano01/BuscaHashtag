@@ -3,12 +3,10 @@ import {lista_tweets, parameters, stream } from '../service/service'
 
 const hashtagRouter = express.Router();
 
-hashtagRouter.route('/parar').get((req, res) => {  
-  res.send(lista_tweets);
-});
 
-hashtagRouter.route('/buscar').get(  async (req, res)  =>{
-  parameters.track="#RaspemOSovaco,#bbb,#BBB"
+hashtagRouter.route('/buscar').post(  async (req, res)  =>{
+  console.log(req.body)
+  parameters.track="#RaspemOSovaco,#bbb,#BBB,#flamengo"
   console.log('calculando')
   stream()
   setTimeout(()=>{
