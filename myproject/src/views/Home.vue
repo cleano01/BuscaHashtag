@@ -127,7 +127,6 @@
 </template>
 
 <script>
-//mensagem, autor, data de publicação
 const data = [ ];
 
 import NavBar from '../componentes/NavBar'
@@ -156,7 +155,8 @@ export default {
           dataIndex: 'name',
           key: 'name',
             
-          onFilter: (value, record) => record.name.toString().toLowerCase().includes(value.toLowerCase()),
+          onFilter: (value, record) => record.name.toString()
+          .toLowerCase().includes(value.toLowerCase()),
           onFilterDropdownVisibleChange: visible => {
             if (visible) {
               setTimeout(() => {
@@ -175,7 +175,8 @@ export default {
             filterIcon: 'filterIcon',
             customRender: 'customRender',
           },
-          onFilter: (value, record) => record.msg.toString().toLowerCase().includes(value.toLowerCase()),
+          onFilter: (value, record) => record.msg.toString().
+          toLowerCase().includes(value.toLowerCase()),
           onFilterDropdownVisibleChange: visible => {
             if (visible) {
               setTimeout(() => {
@@ -189,11 +190,7 @@ export default {
           title: 'Publicação',
           dataIndex: 'date',
           key: 'date',
-          scopedSlots: {
-            filterDropdown: 'filterDropdown',
-            filterIcon: 'filterIcon',
-            customRender: 'customRender',
-          },
+          
           onFilter: (value, record) => record.date.toString()
           .toLowerCase().includes(value.toLowerCase()),
           onFilterDropdownVisibleChange: visible => {
@@ -227,8 +224,10 @@ export default {
   },
 
   beforeCreate() {
-    this.form = this.$form.createForm(this, { name: 'dynamic_form_item' });
-    this.form.getFieldDecorator('keys', { initialValue: [], preserve: true });
+    this.form = this.$form.createForm(this, 
+    { name: 'dynamic_form_item' });
+    this.form.getFieldDecorator('keys', 
+    { initialValue: [], preserve: true });
   },
   
   methods: {
@@ -263,12 +262,12 @@ export default {
     handleSubmit(e){
       e.preventDefault();
       this.form.validateFields((err, values) => {
-        console.log(values)
+        alert(values.names)
         if (!err) {
           this.status_req = true;
           this.conteudo = false
          axios
-         .get('http://localhost:3000/api/hashtag/buscar')
+         .post('http://localhost:3000/api/hashtag/buscar', values.names)
          .then(response => {
            
            response.data.map((item) =>{
@@ -284,7 +283,6 @@ export default {
             })
            this.status_req = false;  
            this.conteudo = true;
-
         })
       .catch(error => {        
         this.errored = true
