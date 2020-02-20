@@ -6,7 +6,6 @@ export const parameters = {
   track:'',        
 };
 
-
 export const tratemento_hashtag = (lista_hashtag) =>{
   let lista_hashtag_tratada='';
 
