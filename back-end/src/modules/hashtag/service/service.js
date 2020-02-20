@@ -26,6 +26,7 @@ export const tratemento_hashtag = (lista_hashtag) =>{
   return lista_hashtag_tratada;
 }
 
+
 export const  stream = () => {
   twitter_config.stream('statuses/filter', 
   parameters, (stream) => {
