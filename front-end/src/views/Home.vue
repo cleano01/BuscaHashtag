@@ -54,13 +54,13 @@
           
           <a-form-item v-bind="formItemLayoutWithOutLabel">
             <a-button type="dashed" style="width: 60%" @click="add">
-              <a-icon type="plus" /> Add field
+              <a-icon type="plus" /> Adicionar hashtags
             </a-button>
           </a-form-item>
 
           <a-form-item v-bind="formItemLayoutWithOutLabel">
             <a-button type="primary" html-type="submit">
-            Submit
+            Buscar
             </a-button>
           </a-form-item>
         </a-form>
@@ -87,10 +87,10 @@
           icon="search"
           size="small"
           style="width: 90px; margin-right: 8px"
-          >Search</a-button
+          >Filtrar</a-button
         >
         <a-button @click="() => handleReset(clearFilters)" size="small" style="width: 90px"
-          >Reset</a-button
+          >Limpar</a-button
         >
       </div>
       <a-icon
