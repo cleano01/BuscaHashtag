@@ -1,6 +1,6 @@
 <template>
   <div>
-    
+
    <NavBar></NavBar>
 
    <div v-show="status_req"  class="folder">
@@ -13,11 +13,11 @@
     </div>
   </div>
 
-    <div  v-show="conteudo" class="container">
+  <div  v-show="conteudo" class="container">
       <div class="row ">
         <div class="col">
-
-        <a-form :form="form" @submit="handleSubmit" class=" col-xs-12 col-lg-12">
+        <a-form :form="form" @submit="handleSubmit" 
+        class=" col-xs-12 col-lg-12">
           <a-form-item
             v-for="(k, index) in form.getFieldValue('keys')"
             :key="k"
@@ -63,49 +63,47 @@
             Submit
             </a-button>
           </a-form-item>
-
         </a-form>
       </div>
 
-      <div class="col col-xs-12"> 
-
-           <a-table :dataSource="data" :columns="columns">
-    <div
-      slot="filterDropdown"
-      slot-scope="{ setSelectedKeys, selectedKeys, confirm, clearFilters, column }"
-      style="padding: 8px"
-    >
-      <a-input
-        v-ant-ref="c => searchInput = c"
-        :placeholder="`Search ${column.dataIndex}`"
-        :value="selectedKeys[0]"
-        @change="e => setSelectedKeys(e.target.value ? [e.target.value] : [])"
-        @pressEnter="() => handleSearch(selectedKeys, confirm)"
-        style="width: 188px; margin-bottom: 8px; display: block;"
-      />
-      <a-button
-        type="primary"
-        @click="() => handleSearch(selectedKeys, confirm)"
-        icon="search"
-        size="small"
-        style="width: 90px; margin-right: 8px"
-        >Search</a-button
+   <div class="col"> 
+    <a-table :dataSource="data" :columns="columns">
+      <div
+        slot="filterDropdown"
+        slot-scope="{ setSelectedKeys, selectedKeys, confirm, clearFilters, column }"
+        style="padding: 8px"
       >
-      <a-button @click="() => handleReset(clearFilters)" size="small" style="width: 90px"
-        >Reset</a-button
-      >
-    </div>
-    <a-icon
-      slot="filterIcon"
-      slot-scope="filtered"
-      type="search"
-      :style="{ color: filtered ? '#108ee9' : undefined }"
-    />
-    <template slot="customRender" slot-scope="text">
-      <span v-if="searchText">
-        <template
-          v-for="(fragment, i) in text.toString().split(new RegExp(`(?<=${searchText})|(?=${searchText})`, 'i'))"
+        <a-input
+          v-ant-ref="c => searchInput = c"
+          :placeholder="`Search ${column.dataIndex}`"
+          :value="selectedKeys[0]"
+          @change="e => setSelectedKeys(e.target.value ? [e.target.value] : [])"
+          @pressEnter="() => handleSearch(selectedKeys, confirm)"
+          style="width: 188px; margin-bottom: 8px; display: block;"
+        />
+        <a-button
+          type="primary"
+          @click="() => handleSearch(selectedKeys, confirm)"
+          icon="search"
+          size="small"
+          style="width: 90px; margin-right: 8px"
+          >Search</a-button
         >
+        <a-button @click="() => handleReset(clearFilters)" size="small" style="width: 90px"
+          >Reset</a-button
+        >
+      </div>
+      <a-icon
+        slot="filterIcon"
+        slot-scope="filtered"
+        type="search"
+        :style="{ color: filtered ? '#108ee9' : undefined }"
+      />
+      <template slot="customRender" slot-scope="text">
+        <span v-if="searchText">
+          <template
+            v-for="(fragment, i) in text.toString().split(new RegExp(`(?<=${searchText})|(?=${searchText})`, 'i'))"
+          >
           <mark
             v-if="fragment.toLowerCase() === searchText.toLowerCase()"
             :key="i"
@@ -115,19 +113,16 @@
           <template v-else
             >{{fragment}}</template
           >
-        </template>
-      </span>
-      <template v-else
-        >{{text}}</template
-      >
-    </template>
-  </a-table>
-      </div>
-        
+          </template>
+        </span>
+        <template v-else
+      >{{text}}</template
+        >
+      </template>
+    </a-table>
+      </div>        
     </div>
   </div>
-    
-
   </div>
 </template>
 
@@ -330,13 +325,12 @@ export default {
   opacity: 0.5;
   
 }
- .highlight {
-    background-color: rgb(255, 192, 105);
-    padding: 0px;
+.highlight {
+  background-color: rgb(255, 192, 105);
+  padding: 0px;
  }
 
-
- .folder {
+.folder {
   height: 100%;
   width: 100%;
   margin: 0;
@@ -346,8 +340,7 @@ export default {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
-  opacity: 1;
-  
+  opacity: 1;  
 }
 
 .example {

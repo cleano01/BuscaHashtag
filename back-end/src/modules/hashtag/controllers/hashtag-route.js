@@ -12,10 +12,8 @@ hashtagRouter.route('/buscar').get(  async (req, res)  =>{
   console.log('calculando')
   stream()
   setTimeout(()=>{
-
     res.send(lista_tweets) 
   }, 15000);
-   console.log('ok')
 });
 
 export default hashtagRouter;
