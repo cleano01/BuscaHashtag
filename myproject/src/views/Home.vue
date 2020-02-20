@@ -1,27 +1,36 @@
 <template>
   <div>
-    
-    <NavBar></NavBar>
 
-    <div class="container">
+   <NavBar></NavBar>
+
+   <div v-show="status_req"  class="folder">
+    <div class="row">
+      <div class="col">
+        <div class="example">
+          <a-spin size="large" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div  v-show="conteudo" class="container">
       <div class="row ">
         <div class="col">
-
-          <p>{{ teste }}</p>
-        <a-form :form="form" @submit="handleSubmit" class=" col-xs-12 col-lg-12">
-        <a-form-item
-          v-for="(k, index) in form.getFieldValue('keys')"
-          :key="k"
-          v-bind="index === 0 ? formItemLayout : formItemLayoutWithOutLabel"
-          :label="index === 0 ? 'hashtags' : ''"
-          :required="false"
-        >
-        <a-input
+        <a-form :form="form" @submit="handleSubmit" 
+        class=" col-xs-12 col-lg-12">
+          <a-form-item
+            v-for="(k, index) in form.getFieldValue('keys')"
+            :key="k"
+            v-bind="index === 0 ? formItemLayout : formItemLayoutWithOutLabel"
+            :label="index === 0 ? 'hashtags' : ''"
+            :required="false"
+          >
+          <a-input
             v-decorator="[
               `names[${k}]`,
               {
                 validateTrigger: ['change', 'blur'],
-                rules: [
+                  rules: [
                   {
                     required: true,
                     whitespace: true,
@@ -34,141 +43,97 @@
             style="width: 60%; margin-right: 8px"
           />
 
-        <a-icon
-          v-if="form.getFieldValue('keys').length > 1"
-          class="dynamic-delete-button"
-          type="minus-circle-o"
-          :disabled="form.getFieldValue('keys').length === 1"
-          @click="() => remove(k)"
+          <a-icon
+            v-if="form.getFieldValue('keys').length > 1"
+            class="dynamic-delete-button"
+            type="minus-circle-o"
+            :disabled="form.getFieldValue('keys').length === 1"
+            @click="() => remove(k)"
+          />
+          </a-form-item>
+          
+          <a-form-item v-bind="formItemLayoutWithOutLabel">
+            <a-button type="dashed" style="width: 60%" @click="add">
+              <a-icon type="plus" /> Add field
+            </a-button>
+          </a-form-item>
+
+          <a-form-item v-bind="formItemLayoutWithOutLabel">
+            <a-button type="primary" html-type="submit">
+            Submit
+            </a-button>
+          </a-form-item>
+        </a-form>
+      </div>
+
+   <div class="col"> 
+    <a-table :dataSource="data" :columns="columns">
+      <div
+        slot="filterDropdown"
+        slot-scope="{ setSelectedKeys, selectedKeys, confirm, clearFilters, column }"
+        style="padding: 8px"
+      >
+        <a-input
+          v-ant-ref="c => searchInput = c"
+          :placeholder="`Search ${column.dataIndex}`"
+          :value="selectedKeys[0]"
+          @change="e => setSelectedKeys(e.target.value ? [e.target.value] : [])"
+          @pressEnter="() => handleSearch(selectedKeys, confirm)"
+          style="width: 188px; margin-bottom: 8px; display: block;"
         />
-
-        </a-form-item>
-        <a-form-item v-bind="formItemLayoutWithOutLabel">
-          <a-button type="dashed" style="width: 60%" @click="add">
-            <a-icon type="plus" /> Add field
-          </a-button>
-        </a-form-item>
-      <a-form-item v-bind="formItemLayoutWithOutLabel">
-        <a-button type="primary" html-type="submit">
-          Submit
-        </a-button>
-      </a-form-item>
-      </a-form>
-
+        <a-button
+          type="primary"
+          @click="() => handleSearch(selectedKeys, confirm)"
+          icon="search"
+          size="small"
+          style="width: 90px; margin-right: 8px"
+          >Search</a-button
+        >
+        <a-button @click="() => handleReset(clearFilters)" size="small" style="width: 90px"
+          >Reset</a-button
+        >
       </div>
-
-      <div class="col">        
-        <a-table :columns="columns" :dataSource="data" @change="onChange" />
-      </div>
-        
-      </div>
+      <a-icon
+        slot="filterIcon"
+        slot-scope="filtered"
+        type="search"
+        :style="{ color: filtered ? '#108ee9' : undefined }"
+      />
+      <template slot="customRender" slot-scope="text">
+        <span v-if="searchText">
+          <template
+            v-for="(fragment, i) in text.toString().split(new RegExp(`(?<=${searchText})|(?=${searchText})`, 'i'))"
+          >
+          <mark
+            v-if="fragment.toLowerCase() === searchText.toLowerCase()"
+            :key="i"
+            class="highlight"
+            >{{fragment}}</mark
+          >
+          <template v-else
+            >{{fragment}}</template
+          >
+          </template>
+        </span>
+        <template v-else
+      >{{text}}</template
+        >
+      </template>
+    </a-table>
+      </div>        
     </div>
-    
-
+  </div>
   </div>
 </template>
 
 <script>
+//mensagem, autor, data de publicação
+const data = [ ];
+
 import NavBar from '../componentes/NavBar'
 import axios from 'axios'
 
 let id = 0;
-
-
-const columns = [
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      filters: [
-        {
-          text: 'Joe',
-          value: 'Joe',
-        },
-          {
-          text: '#flamengo',
-          value: '#flamengo',
-        },
-        {
-          text: 'jim',
-          value: 'jim',
-        },
-        {
-          text: 'Submenu',
-          value: 'Submenu',
-          children: [
-            {
-              text: 'Green',
-              value: 'Green',
-            },
-            {
-              text: 'Black',
-              value: 'Black',
-            },
-          ],
-        },
-      ],
-      // specify the condition of filtering result
-      // here is that finding the name started with `value`
-      onFilter: (value, record) => record.name.indexOf(value) === 0,
-      sorter: (a, b) => a.name.length - b.name.length,
-      sortDirections: ['descend'],
-    },
-    {
-      title: 'Age',
-      dataIndex: 'age',
-      sorter: (a, b) => a.age - b.age,
-    },
-    {
-      title: 'Address',
-      dataIndex: 'address',
-      filters: [
-        {
-          text: 'London',
-          value: 'London',
-        },
-        {
-          text: 'New York',
-          value: 'New York',
-        },
-        {
-          text: '#flamengo',
-          value: '#flamengo',
-        },
-      ],
-      filterMultiple: false,
-      onFilter: (value, record) => record.address.indexOf(value) === 0,
-      sorter: (a, b) => a.address.length - b.address.length,
-      sortDirections: ['descend', 'ascend'],
-    },
-  ];
-
-  const data = [
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address:  '#flamengo',
-    },
-    {
-      key: '2',
-      name: '#flamengo h dsadaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-      age: 42,
-      address: ' aninhos do mini flamenguista Arthur! #festaflamengo #flamengo #fla #nacaorubronegra #otopatamar #futebol #festafutebol',
-    },
-    {
-      key: '3',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sidney No. 1 Lake Park',
-    },
-    {
-      key: '4',
-      name: 'Jim Red',
-      age: 32,
-      address: 'London No. 2 Lake Park #flamengo',
-    },
-  ];
-
   function onChange(pagination, filters, sorter) {
     console.log('params', pagination, filters, sorter);
   }
@@ -180,14 +145,74 @@ export default {
 
   data() {
     return {
-      teste: [],
-      
+      status_req:false,
+      conteudo : true,
+      data,
+      searchText: '',
+      searchInput: null,
+      columns: [
+        {
+          title: 'Autor',
+          dataIndex: 'name',
+          key: 'name',
+            
+          onFilter: (value, record) => record.name.toString().toLowerCase().includes(value.toLowerCase()),
+          onFilterDropdownVisibleChange: visible => {
+            if (visible) {
+              setTimeout(() => {
+                this.searchInput.focus();
+               }, 0);
+            }
+          },
+        },
+
+        {
+          title: 'Mensagem',
+          dataIndex: 'msg',
+          key: 'msg',
+          scopedSlots: {
+            filterDropdown: 'filterDropdown',
+            filterIcon: 'filterIcon',
+            customRender: 'customRender',
+          },
+          onFilter: (value, record) => record.msg.toString().toLowerCase().includes(value.toLowerCase()),
+          onFilterDropdownVisibleChange: visible => {
+            if (visible) {
+              setTimeout(() => {
+                this.searchInput.focus();
+              });
+            }
+          },
+        },
+
+        {
+          title: 'Publicação',
+          dataIndex: 'date',
+          key: 'date',
+          scopedSlots: {
+            filterDropdown: 'filterDropdown',
+            filterIcon: 'filterIcon',
+            customRender: 'customRender',
+          },
+          onFilter: (value, record) => record.date.toString()
+          .toLowerCase().includes(value.toLowerCase()),
+          onFilterDropdownVisibleChange: visible => {
+            if (visible) {
+              setTimeout(() => {
+                this.searchInput.focus();
+              });
+            }
+          },
+        },
+      ],
+
+
       formItemLayout: {
         labelCol: {
           xs: { span: 24 },
           sm: { span: 4 },
         },
-        wrapperCol: {
+        wrapperCstatus_req_tabelaol: {
           xs: { span: 24 },
           sm: { span: 20 },
         },
@@ -197,9 +222,7 @@ export default {
           xs: { span: 24, offset: 0 },
           sm: { span: 20, offset: 4 },
         },
-      },
-      data,
-        columns,
+      },     
     };
   },
 
@@ -209,8 +232,8 @@ export default {
   },
   
   methods: {
-     onChange,
-    remove(k) {
+    onChange,
+    remove(k){
       const { form } = this;
       // can use data-binding to get
       const keys = form.getFieldValue('keys');
@@ -225,7 +248,7 @@ export default {
       });
     },
 
-    add() {
+    add(){
       const { form } = this;
       // can use data-binding to get
       const keys = form.getFieldValue('keys');
@@ -237,52 +260,55 @@ export default {
       });
     },
 
-    handleSubmit(e) {
-      console.log('ok')
+    handleSubmit(e){
       e.preventDefault();
       this.form.validateFields((err, values) => {
+        console.log(values)
         if (!err) {
-          console.log('Received values of form: ', values);
-          axios
-          .get('http://localhost:3000/api/hashtag/parar')
-          .then(response => {
-            //mensagem, autor, data de publicação
-            response.data.map((item) =>{
-              if(item !== null){
-                this.teste.push({
-                  'id': item.id,  
-                  'nome':item.user.name,
-                  'msg':item.text,
-                  'data': item.user.created_at
-                })
-                console.log(item)
+          this.status_req = true;
+          this.conteudo = false
+         axios
+         .get('http://localhost:3000/api/hashtag/buscar')
+         .then(response => {
+           
+           response.data.map((item) =>{
+             if(item !== null){
+              data.push({
+                'id': item.id,  
+                'name':item.user.name,
+                'msg':item.text,
+                'date': item.user.created_at
+              })             
               }
+
             })
-            alert(response.data[0].length )
-          })
-      .catch(error => {
-        console.log(error)
+           this.status_req = false;  
+           this.conteudo = true;
+
+        })
+      .catch(error => {        
         this.errored = true
-      })
-       }
-        
-      }
-      
-      );
+        return error
+      }) } });
     },
 
-  
+
+  /*table*/
+  handleSearch(selectedKeys, confirm){
+      confirm();
+      this.searchText = selectedKeys[0];
   },
-
-  
-
-}
+  handleReset(clearFilters) {
+    clearFilters();
+    this.searchText = '';
+  },
+      
+  }// methods
+}//export default
 </script>
 
 
-
 <style scoped >
-
 .dynamic-delete-button {
   cursor: pointer;
   position: relative;
@@ -297,10 +323,33 @@ export default {
 .dynamic-delete-button[disabled] {
   cursor: not-allowed;
   opacity: 0.5;
+  
+}
+.highlight {
+  background-color: rgb(255, 192, 105);
+  padding: 0px;
+ }
+
+.folder {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 2rem;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  opacity: 1;  
 }
 
-
-
-
+.example {
+  text-align: center;
+  /* background: rgba(226, 217, 217, 0.192); */
+  border-radius: 4px;
+  margin-bottom: 20px;
+  padding: 30px 50px;
+  margin: 20px 0;
+}
 
 </style>
