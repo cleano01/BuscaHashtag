@@ -20,7 +20,7 @@ export const tratemento_hashtag = (lista_hashtag) =>{
       lista_hashtag_tratada += elemento+','
     }
   })
-
+  
   lista_hashtag_tratada = lista_hashtag_tratada
   .substr(0, (lista_hashtag_tratada.length - 1));
   return lista_hashtag_tratada;
